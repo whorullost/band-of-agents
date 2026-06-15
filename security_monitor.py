@@ -1,29 +1,33 @@
 # agent 1: security monitoring for access control
 
 from datetime import datetime
-from security_monitor import log_attempt, record_failure
+import json
 
-audit_log = []
+SECURITY_LOG = "security_events.jsonl"
 
-def log_attempt(user, action, allowed):
-    audit_log.append({
-        "timestamp": datetime.now(),
-        "user": user,
+#successful attempt to access payroll data
+def log_attempt(username, action, success=False):
+
+    event = {
+        "timestamp": datetime.now().isoformat(),
+        "username": username,
         "action": action,
-        "allowed": allowed
-    })
+        "success": success
+    }
 
-failed_attempts = {}
+    with open(SECURITY_LOG, "a") as f:
+        f.write(json.dumps(event) + "\n")
 
-def record_failure(user):
-    failed_attempts[user] = (
-        failed_attempts.get(user, 0) + 1
-    )
+#failed attempt to access payroll data + flagging user for suspicious activity
+def flag_user(username, reason, risk_score):
 
-    if failed_attempts[user] >= 3:
-        return True
+    event = {
+        "timestamp": datetime.now().isoformat(),
+        "username": username,
+        "reason": reason,
+        "risk_score": risk_score,
+        "status": "FLAGGED"
+    }
 
-    return False
-
-if record_failure(user):
-    #need to have lockout mechanism + alert/record of sus activity (ex: multiple failed attempts)
+    with open(SECURITY_LOG, "a") as f:
+        f.write(json.dumps(event) + "\n")    
