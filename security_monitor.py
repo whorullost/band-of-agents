@@ -36,29 +36,16 @@ def log_attempt(user, action, allowed):
     new_row = pd.DataFrame([new_attempt])
     df_login = pd.concat([df_login, new_row], ignore_index=True)
     df_login.to_csv("audit_log.csv", index=False)
-#Iris'
-import json
 
-SECURITY_LOG = "security_events.jsonl"
-
-"""#successful attempt to access payroll data
-def log_attempt(username, action, success=False):
-
-    event = {
-        "timestamp": datetime.now().isoformat(),
-        "username": username,
-        "action": action,
-        "success": success
-    }"""
 failed_attempts = {}
 
 def record_failure(user):
-  #Mia's
     global df_flagged
     failed_attempts[user] = (
         failed_attempts.get(user, 0) + 1
     )
 
+    #failed attempt to access payroll data >= 5 + flagging user for suspicious activity
     if failed_attempts[user] >= 5:
         new_flag  = {
             "user":user,
@@ -87,21 +74,3 @@ def get_failed_attempts(user):
         return failed_attempts[user]
     else:
         return 0
-    
-#Iris'
-    with open(SECURITY_LOG, "a") as f:
-        f.write(json.dumps(event) + "\n")
-
-#failed attempt to access payroll data + flagging user for suspicious activity
-def flag_user(username, reason, risk_score):
-
-    event = {
-        "timestamp": datetime.now().isoformat(),
-        "username": username,
-        "reason": reason,
-        "risk_score": risk_score,
-        "status": "FLAGGED"
-    }
-
-    with open(SECURITY_LOG, "a") as f:
-        f.write(json.dumps(event) + "\n")    

@@ -11,7 +11,7 @@ import os
 # Stored as environment variable so it's never hardcoded in public code
 SECRET_SALT = os.getenv("ANON_SALT", "hackathon-secret")
 
-# Convert real salary to a range label so AI never sees exact numbers
+# Convert real salary to a range label so AI never sees exact numbers, but only to select AIs that dont need to calculate with exact salaries
 def anonymize_salary(salary):
     if salary < 50000:
         return "Low-Range"
@@ -50,6 +50,24 @@ def anonymize_one(employee):
         "retirement_contribution": employee["retirement_contribution"],
         "stock_options": employee["stock_options"]
     }
+
+def prepare_for_agent(employee, agent_type):
+    views = {
+        "payroll_agent": { #agent 5 (payroll calc)
+            "employee_id": employee["employee_id"],
+            "base_salary": employee["base_salary"],
+            "employment_type": employee["employment_type"]
+        },
+
+        "benefits_agent": { #agent 4 (benefit agent), 5 (payroll calc)
+            "employee_id": anonymize_id(employee["employee_id"]),
+            "health_insurance": employee["health_insurance"],
+            "retirement_contribution": employee["retirement_contribution"],
+            "stock_options": employee["stock_options"]
+        }
+    }
+
+    return views[agent_type]
 
 #Takes list of real employee dictionaries, returns fully anonymized list.
 def anonymize_all(employees_list):
