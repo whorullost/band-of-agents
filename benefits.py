@@ -3,7 +3,7 @@
 # no need to read in / anonymized: name, department, manager_id, hr_role, job_title
 
 #HEALTH INSURANCE: full time eligible, part time not eligible, contract not eligible
-#FULL TIME HEALTH INSURANCE: Basic plan costs company $5000/year, Premium plan costs company $8000/year
+#   FULL TIME HEALTH INSURANCE: Basic plan costs company $5000/year, Premium plan costs company $8000/year
 def calculate_health_benefit(employee):
     if employee["employment_type"] != "Full-Time":
         return {
@@ -25,7 +25,7 @@ def calculate_health_benefit(employee):
     }
 
 #RETIREMENT/401K CONTRIBUTION: full time eligible, part time pro-rated based on hours, contract not eligible
-#FULL TIME RETIREMENT: that 100% match up to 3% of salary, then 50% match for next 2% of salary, max 4% total match
+#   FULL TIME RETIREMENT: that 100% match up to 3% of salary, then 50% match for next 2% of salary, max 4% total match
 def calculate_retirement_match(salary, contribution_pct):
 
     contribution_pct = float(
@@ -44,7 +44,7 @@ def calculate_retirement_match(salary, contribution_pct):
 
     return round(company_match, 2)
 
-#PART TIME RETIREMENT MATCH: 50% of full time match if working 20-30 hours, 0% if less than 20 hours
+#   PART TIME RETIREMENT MATCH: 50% of full time match if working 20-30 hours, 0% if less than 20 hours
 def calculate_retirement_match(
     salary,
     contribution_pct,
@@ -89,7 +89,7 @@ def calculate_retirement_match(
     }
 
 #STOCK OPTIONS: full time eligible, part time pro-rated based on hours, contract not eligible
-#FULL TIME STOCK OPTIONS: 100% of options vest after 4 years, with linear vesting in between (25% after 1 year, 50% after 2 years, 75% after 3 years)
+#   FULL TIME STOCK OPTIONS: 100% of options vest after 4 years, with linear vesting in between (25% after 1 year, 50% after 2 years, 75% after 3 years)
 def calculate_stock_options(employee):
 
     if employee["stock_options"] != "Yes":
@@ -119,7 +119,7 @@ def calculate_stock_options(employee):
         "vested_percent": vested
     }
 
-#PART TIME STOCK OPTIONS: 50% of full time options if working 20-30 hours, 0% if less than 20 hours, with same vesting schedule as full time
+#   PART TIME STOCK OPTIONS: 50% of full time options if working 20-30 hours, 0% if less than 20 hours, with same vesting schedule as full time
 def calculate_stock_options(
     employee,
     hours_per_week,
