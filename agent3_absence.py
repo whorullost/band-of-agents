@@ -50,54 +50,65 @@ def ag3_get_absence_by_employee(user, employee_id):
         return get_absence_by_employee(employee_id)
     else:
         return "Invalid action"
-
+"""
 def get_absence_field(user, employee_id, field):
     if run_security_check(user, "record_absence"):
         return get_absence_by_field(employee_id, field)
     else:
         return "Invalid action"
+"""
     
 def flag_for_hr_review(employee_id, absence_type):
     return (f"{absence_type} for {employee_id} requires HR review")
     
 def ag3_calculate_deduction(user, employee_id, month, year):
+    """Calculates total deduction across ALL absence types for an employee in a given month.
+    Loops through each unique absence type present, applies rules separately, sums total.
+    """
     if run_security_check(user, "record_absence"):
-        absence_type = get_absence_field(user, employee_id, "absence_type")
+        absences = get_absence_by_month(month, year)
+        employee_absences = [a for a in absences if a["employee_id"] == employee_id]
+
+        if not employee_absences:
+            return 0  # no absences this month, no deduction
+
         region = ag1_get_employee_field_by_anon(user, employee_id, "region")
-        employment_type = ag1_get_employee_field_by_anon(user, employee_id, "employment_type")
-        if (absence_type != "Access denied") and (region != "Invalid action") and (employment_type != "Invalid action"):
-            deduction_result = get_deduction_rules(absence_type, region, employment_type)
-        else:
+        employment_type =  ag1_get_employee_field_by_anon(user, employee_id, "employment_type")
+        base_salary =  ag1_get_employee_field_by_anon(user, employee_id, "base_salary")
+
+        if region == "Access denied" or employment_type == "Access denied":
             return "Invalid inputs"
 
-        if deduction_result["requires_hr_review"]:
-            return flag_for_hr_review(employee_id, absence_type)
-        
-        if ag3_get_used_paid_days(user, employee_id, absence_type) <= deduction_result["paid_days_allowed"]:
-            return 0
-        
-        absences = get_absence_by_month(month, year)
-        employee_absences = [
-            a for a in absences
-            if a["employee_id"] == employee_id
-            and a["absence_type"] == absence_type
-        ]
+        unique_types = set(a["absence_type"] for a in employee_absences)
+        total_deduction = 0
+        hr_review_flags = []
 
-        base_salary = ag1_get_employee_field_by_anon(user, employee_id, "base_salary")
-        deduction = 0
+        for absence_type in unique_types:
+            deduction_result = get_deduction_rules(absence_type, region, employment_type)
 
-        if deduction_result["deduction_type"] == "full_day":
-            days_missed = len(employee_absences)
-            daily_rate = base_salary / 260
-            deduction = daily_rate * days_missed
-        elif deduction_result["deduction_type"] == "hourly":
-            hours_missed = sum(a["hours_missed"] for a in employee_absences)
-            hourly_rate = base_salary / 2080
-            deduction = hourly_rate * hours_missed
-        elif deduction_result["deduction_type"] == "none":
-            deduction = 0
-    
-        return deduction
+            if deduction_result["requires_hr_review"]:
+                hr_review_flags.append(flag_for_hr_review(employee_id, absence_type))
+                continue
+
+            if ag3_get_used_paid_days(user, employee_id, absence_type) <= deduction_result["paid_days_allowed"]:
+                continue  # within paid allowance, no deduction for this type
+
+            type_absences = [a for a in employee_absences if a["absence_type"] == absence_type]
+
+            if deduction_result["deduction_type"] == "full_day":
+                days_missed = len(type_absences)
+                daily_rate = base_salary / 260
+                total_deduction += daily_rate * days_missed
+            elif deduction_result["deduction_type"] == "hourly":
+                hours_missed = sum(a["hours_missed"] for a in type_absences)
+                hourly_rate = base_salary / 2080
+                total_deduction += hourly_rate * hours_missed
+            # "none" deduction_type adds nothing
+
+        if hr_review_flags:
+            print(f"HR review needed: {hr_review_flags}")
+
+        return round(total_deduction, 2)
     return "Invalid action"
 
 def ag3_flag_excessive_absences(user, employee_id, month, year):

@@ -10,6 +10,7 @@ def run_security_check(user, action):
     log_attempt(user, action, allowed=True)"""
     return True
 
+"""
 from datetime import datetime
 from anonymizer import anonymized_list, original_list
 from authorize import authorize_request
@@ -53,9 +54,7 @@ ACCESS_LOG = []
 
 
 def log_access(agent_name, status, reason):
-   """
    Records all security decisions.
-   """
 
 
    ACCESS_LOG.append({
@@ -69,9 +68,7 @@ def log_access(agent_name, status, reason):
 
 
 def authorize_request(agent_name, requested_fields):
-   """
    Check whether an agent can access requested fields.
-   """
 
 
    if agent_name not in AGENT_PERMISSIONS:
@@ -175,3 +172,4 @@ def get_employee_data(agent_name, requested_fields):
 
    return filtered_records
 
+"""
