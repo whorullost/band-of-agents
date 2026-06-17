@@ -1,14 +1,16 @@
 # for agent 4
 #is technically pulling from employee dataset so need to change to fit into w/ agent 1 and 2 framework, but can be used for reference for now
 # no need to read in / anonymized: name, department, manager_id, hr_role, job_title
+from datetime import datetime
 
 #HEALTH INSURANCE: full time eligible, part time not eligible, contract not eligible
 #   FULL TIME HEALTH INSURANCE: Basic plan costs company $5000/year, Premium plan costs company $8000/year
-def calculate_health_benefit(employee):
-    if employee["employment_type"] != "Full-Time":
+def calculate_health_benefit(employment_type, health_insurance):
+    if employment_type != "Full-Time":
         return {
             "eligible": False,
-            "company_cost": 0
+            "plan": False,
+            "monthly_company_cost": 0
         }
 
     plans = {
@@ -16,44 +18,35 @@ def calculate_health_benefit(employee):
         "Premium": 8000
     }
 
-    plan = employee["health_insurance"]
+    emp_plan = health_insurance
 
     return {
         "eligible": True,
-        "plan": plan,
-        "annual_company_cost": plans.get(plan, 0)
+        "plan": emp_plan,
+        "monthly_company_cost": round(plans.get(emp_plan, 0)/12)
     }
-
+"""
 #RETIREMENT/401K CONTRIBUTION: full time eligible, part time pro-rated based on hours, contract not eligible
 #   FULL TIME RETIREMENT: that 100% match up to 3% of salary, then 50% match for next 2% of salary, max 4% total match
-def calculate_retirement_match(salary, contribution_pct):
+def calculate_retirement_match(salary, retirement_contribution):
 
-    contribution_pct = float(
-        str(contribution_pct).replace("%", "")
-    )
+    contribution_pct = float(str(retirement_contribution).replace("%", ""))
 
     match_pct = min(contribution_pct, 3)
 
     if contribution_pct > 3:
-        match_pct += min(
-            contribution_pct - 3,
-            2
-        ) * 0.5
+        match_pct += min(contribution_pct - 3, 2) * 0.5
 
     company_match = salary * (match_pct / 100)
 
     return round(company_match, 2)
+"""
 
-#   PART TIME RETIREMENT MATCH: 50% of full time match if working 20-30 hours, 0% if less than 20 hours
-def calculate_retirement_match(
-    salary,
-    contribution_pct,
-    hours_per_week
-):
-
-    contribution_pct = float(
-        str(contribution_pct).replace("%", "")
-    )
+#RETIREMENT/401K CONTRIBUTION: full time eligible, part time pro-rated based on hours, contract not eligible
+#FULL TIME RETIREMENT: that 100% match up to 3% of salary, then 50% match for next 2% of salary, max 4% total match
+#PART TIME RETIREMENT MATCH: 50% of full time match if working 20-30 hours, 0% if less than 20 hours
+def calculate_retirement_match(salary, contribution_pct, hours_per_week):
+    contribution_pct = float(str(contribution_pct).replace("%", ""))
 
     # Standard company match:
     # 100% of first 3%
@@ -77,27 +70,40 @@ def calculate_retirement_match(
     else:
         multiplier = 1.0
 
-    company_match = (
-        salary *
-        (match_pct / 100) *
-        multiplier
-    )
+    company_match = (salary *(match_pct / 100) *multiplier)
 
     return {
         "eligible": multiplier > 0,
         "company_match": round(company_match, 2)
     }
 
+def calculate_years_of_service(hire_date):
+    hire = datetime.strptime(hire_date, "%Y-%m-%d")
+    today = datetime.now()
+    years = (today - hire).days / 365
+    return years
+
 #STOCK OPTIONS: full time eligible, part time pro-rated based on hours, contract not eligible
 #   FULL TIME STOCK OPTIONS: 100% of options vest after 4 years, with linear vesting in between (25% after 1 year, 50% after 2 years, 75% after 3 years)
-def calculate_stock_options(employee):
+def calculate_stock_options(stock_option, hire_date, hours_per_week):
 
-    if employee["stock_options"] != "Yes":
-        return {
-            "eligible": False
-        }
+    if stock_option != "Yes":
+        return {"eligible": False,
+                "vested_percent": 0}
+    
+    if hours_per_week < 20:
+        grant_multiplier = 0
 
-    years = employee["years_of_service"]
+    elif hours_per_week < 30:
+        grant_multiplier = 0.5
+
+    else:
+        grant_multiplier = 1.0
+    
+    base_grant = 1000
+    granted_shares = int(base_grant * grant_multiplier)
+
+    years = calculate_years_of_service(hire_date)
 
     if years < 1:
         vested = 0
@@ -114,11 +120,16 @@ def calculate_stock_options(employee):
     else:
         vested = 100
 
+    vested_shares = int(granted_shares *vested / 100)
+
     return {
-        "eligible": True,
-        "vested_percent": vested
+        "eligible": granted_shares > 0,
+        "granted_shares": granted_shares,
+        "vested_percent": vested,
+        "vested_shares": vested_shares
     }
 
+"""
 #   PART TIME STOCK OPTIONS: 50% of full time options if working 20-30 hours, 0% if less than 20 hours, with same vesting schedule as full time
 def calculate_stock_options(
     employee,
@@ -174,3 +185,4 @@ def calculate_stock_options(
         "vested_percent": vested_pct,
         "vested_shares": vested_shares
     }
+    """
