@@ -1,4 +1,1 @@
 employee_id,date,absence_type,hours_missed,region,employment_type
-S_91550FEB,2026-06-01,sick_leave,8,California,Full-Time
-S_91550FEB,2026-06-03,sick_leave,8,California,Full-Time
-S_91550FEB,2026-06-05,unpaid_leave,8,California,Full-Time

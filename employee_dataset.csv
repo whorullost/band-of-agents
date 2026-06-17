@@ -1,13 +1,13 @@
-employee_id,name,department,job_title,employment_type,base_salary,start_date,manager_id,health_insurance,retirement_contribution,stock_options,hr_role, region
-E001,Sarah Chen,Engineering,Software Engineer,Full-Time,85000,2022-03-15,M001,Yes,5%,Yes,junior_hr, California
-E002,James Park,Human Resources,HR Specialist,Full-Time,72000,2019-07-01,M002,Yes,8%,No,senior_hr, Texas
-E003,Maria Lopez,Finance,Senior Analyst,Full-Time,90000,2020-11-20,M003,Yes,10%,Yes,manager, Connecticut
-E004,David Kim,Engineering,Junior Developer,Full-Time,65000,2023-01-10,M001,Yes,3%,No,junior_hr, Texas
-E005,Lisa Wong,Marketing,Marketing Manager,Full-Time,78000,2021-05-05,M004,Yes,6%,Yes,manager, Oregon
-E006,Tom Harris,Finance,Accountant,Part-Time,45000,2022-09-01,M003,No,0%,No,junior_hr, New York
-E007,Anna Smith,Human Resources,HR Director,Full-Time,110000,2018-02-28,M002,Yes,12%,Yes,admin, Washington
-E008,Chris Lee,Engineering,Senior Engineer,Full-Time,95000,2020-06-15,M001,Yes,10%,Yes,manager, Maryland
-E009,Maya Patel,Marketing,Content Writer,Part-Time,40000,2023-08-20,M004,No,0%,No,junior_hr, France
-E010,John Davis,Finance,CFO,Full-Time,150000,2017-04-01,M003,Yes,15%,Yes,admin, California
-E011,Roger Chang,Engineering,Software Engineer,Part-Time,67000,2026-06-15,,Yes,3%,No,employee, Vermont
-E012,Andy Chang,Finance,Junior Analyst,Full-Time,100000,2026-06-15,,Yes,3%,No,employee, Ohio
+employee_id,name,department,job_title,employment_type,base_salary,start_date,manager_id,health_insurance,retirement_contribution,stock_options,hr_role,region
+E001,Sarah Chen,Engineering,Software Engineer,Full-Time,85000,2022-03-15,M001,Yes,5%,Yes,junior_hr,California
+E002,James Park,Human Resources,HR Specialist,Full-Time,72000,2019-07-01,M002,Yes,8%,No,senior_hr,Texas
+E003,Maria Lopez,Finance,Senior Analyst,Full-Time,90000,2020-11-20,M003,Yes,10%,Yes,manager,Connecticut
+E004,David Kim,Engineering,Junior Developer,Full-Time,65000,2023-01-10,M001,Yes,3%,No,junior_hr,Texas
+E005,Lisa Wong,Marketing,Marketing Manager,Full-Time,78000,2021-05-05,M004,Yes,6%,Yes,manager,Oregon
+E006,Tom Harris,Finance,Accountant,Part-Time,45000,2022-09-01,M003,No,0%,No,junior_hr,New York
+E007,Anna Smith,Human Resources,HR Director,Full-Time,110000,2018-02-28,M002,Yes,12%,Yes,admin,Washington
+E008,Chris Lee,Engineering,Senior Engineer,Full-Time,95000,2020-06-15,M001,Yes,10%,Yes,manager,Maryland
+E009,Maya Patel,Marketing,Content Writer,Part-Time,40000,2023-08-20,M004,No,0%,No,junior_hr,France
+E010,John Davis,Finance,CFO,Full-Time,150000,2017-04-01,M003,Yes,15%,Yes,admin,California
+E011,Roger Chang,Engineering,Software Engineer,Part-Time,67000,2026-06-15,,Yes,3%,No,employee,Vermont
+E012,Andy Chang,Finance,Junior Analyst,Full-Time,100000,2026-06-15,,Yes,3%,No,employee,Ohio

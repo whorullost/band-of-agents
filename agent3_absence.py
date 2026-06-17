@@ -1,5 +1,5 @@
 from agent2_security import run_security_check
-from agent1_onboarding import ag1_get_employee_field
+from agent1_onboarding import ag1_get_employee_field_by_anon
 from absence_loader import record_absence, get_used_paid_days, delete_absence, update_absence, get_all_absences, get_absence_by_month, get_absence_by_employee, get_absence_by_field
 from deduction_ai import get_deduction_rules
 from datetime import datetime
@@ -63,8 +63,8 @@ def flag_for_hr_review(employee_id, absence_type):
 def ag3_calculate_deduction(user, employee_id, month, year):
     if run_security_check(user, "record_absence"):
         absence_type = get_absence_field(user, employee_id, "absence_type")
-        region = ag1_get_employee_field(user, employee_id, "region")
-        employment_type = ag1_get_employee_field(user, employee_id, "employment_type")
+        region = ag1_get_employee_field_by_anon(user, employee_id, "region")
+        employment_type = ag1_get_employee_field_by_anon(user, employee_id, "employment_type")
         if (absence_type != "Access denied") and (region != "Invalid action") and (employment_type != "Invalid action"):
             deduction_result = get_deduction_rules(absence_type, region, employment_type)
         else:
@@ -83,7 +83,7 @@ def ag3_calculate_deduction(user, employee_id, month, year):
             and a["absence_type"] == absence_type
         ]
 
-        base_salary = ag1_get_employee_field(user, employee_id, "base_salary")
+        base_salary = ag1_get_employee_field_by_anon(user, employee_id, "base_salary")
         deduction = 0
 
         if deduction_result["deduction_type"] == "full_day":
@@ -131,7 +131,7 @@ def ag3_get_absence_report(user, employee_id, month, year):
             "absences": monthly
         }
     return "Invalid action"
-
+"""
 if __name__ == "__main__":
     from absence_loader import record_absence
     
@@ -157,6 +157,7 @@ if __name__ == "__main__":
     
     print("\n5. Get absence report:")
     print(ag3_get_absence_report("anna.smith", "S_91550FEB", 6, 2026))
+"""
 
 # ── IRIS'S VERSION (keeping for reference) ──────────────────
 """

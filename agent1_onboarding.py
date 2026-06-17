@@ -1,6 +1,7 @@
 from data_loader import get_all_employees, get_employee, get_field, add_employee, update_employee, delete_employee
 from agent2_security import run_security_check
 from anonymizer import anonymize_all, anonymize_one, anonymize_name, anonymize_id
+from lookup import build_lookup_table
 
 def ag1_get_all_employees(user):
     if run_security_check(user, "view_payroll") == True:
@@ -9,6 +10,19 @@ def ag1_get_all_employees(user):
         return anon_data
     else:
         return "Access denied"
+    
+def get_real_id(user, anon_id):
+    """Converts anonymized session ID back to real employee ID"""
+    if run_security_check(user, "get_id"):
+        original_list = get_all_employees()
+        anonymized_list = ag1_get_all_employees(user)
+        lookup = build_lookup_table(anonymized_list, original_list)
+
+        real_id = lookup.get(anon_id)
+        if not real_id:
+            return None
+        return real_id
+    return None
     
 def ag1_get_one_employee(user, id):
     if run_security_check(user, "view_payroll") == True:
@@ -31,7 +45,17 @@ def ag1_get_employee_field(user, id, field):
             return get_field(id, field)
     else:
         return "Access denied"
-
+    
+def ag1_get_employee_field_by_anon(user, anon_id, field):
+    if run_security_check(user, "action") == True:
+        if field == "name" or field == "employee_id":
+            return "Invalid action"
+        real_id = get_real_id(user, anon_id)
+        if real_id == None:
+            return "Employee not found"
+        return ag1_get_employee_field(user, real_id, field)
+    else:
+        return "Access denied"
 def ag1_add_employee(user, name, dpt, job_title, emp_type, base_salary, region):
     if run_security_check(user, "add_employee") == True:
         details = {
