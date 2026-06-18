@@ -1,24 +1,20 @@
 #ToDo: Replace with actual code later, return true for agent1 checking purposes
-#from security_monitor import log_attempt, record_failure
-#from authorize import authorize
+from datetime import datetime
+from anonymizer import anonymized_list, original_list
+from security_monitor import log_attempt, record_failure
+from authorize import authorize, authorize_request
 
 def run_security_check(user, action):
-    """if not authorize(user, action):
+    if not authorize(user, action):
         log_attempt(user, action, allowed=False)
         record_failure(user)
         return False
-    log_attempt(user, action, allowed=True)"""
     return True
-
-"""
-from datetime import datetime
-from anonymizer import anonymized_list, original_list
-from authorize import authorize_request
 
 
 # access permissions for each agent roles
 AGENT_PERMISSIONS = {
-   "payroll_agent": {
+   "agent5_payroll": {
        "employee_id",
        "employment_type",
        "base_salary",
@@ -26,7 +22,7 @@ AGENT_PERMISSIONS = {
    },
 
 
-   "benefits_agent": {
+   "agent4_benefits": {
        "employee_id",
        "employment_type",
        "health_insurance",
@@ -35,7 +31,7 @@ AGENT_PERMISSIONS = {
    },
 
 
-   "absence_agent": {
+   "agent3_absence": {
        "employee_id",
        "employment_type",
        "department"
@@ -47,16 +43,11 @@ AGENT_PERMISSIONS = {
    }
 }
 
-
 ACCESS_LOG = []
 
 
-
-
 def log_access(agent_name, status, reason):
-   Records all security decisions.
-
-
+   #Records all security decisions.
    ACCESS_LOG.append({
        "timestamp": datetime.now(),
        "agent": agent_name,
@@ -66,13 +57,9 @@ def log_access(agent_name, status, reason):
 
 
 
-
 def authorize_request(agent_name, requested_fields):
-   Check whether an agent can access requested fields.
-
-
+   #Check whether an agent can access requested fields.
    if agent_name not in AGENT_PERMISSIONS:
-
 
        log_access(
            agent_name,
@@ -80,12 +67,10 @@ def authorize_request(agent_name, requested_fields):
            "Unknown agent"
        )
 
-
        return False
 
 
    permissions = AGENT_PERMISSIONS[agent_name]
-
 
    if "*" in permissions:
        log_access(
@@ -103,28 +88,18 @@ def authorize_request(agent_name, requested_fields):
 
 
    if unauthorized:
-
-
        log_access(
            agent_name,
            "DENIED",
            f"Unauthorized fields: {unauthorized}"
        )
-
-
        return False
-
-
    log_access(
        agent_name,
        "APPROVED",
        "Valid request"
    )
-
-
    return True
-
-
 
 
 def get_logs():
@@ -133,28 +108,21 @@ def get_logs():
 
 # connecting to agent 1: determining access permissions (anonymized or non) for payroll data based on which agent is requesting
 def get_employee_data(agent_name, requested_fields):
-
-
    approved = authorize_request(
        agent_name,
        requested_fields
    )
-
-
    if not approved:
        raise PermissionError(
            f"{agent_name} is not authorized."
        )
 
-
    # HR gets full records
    if agent_name == "hr_admin":
        return original_list
 
-
    # Other agents get anonymized records
    filtered_records = []
-
 
    for employee in anonymized_list:
 
@@ -171,5 +139,3 @@ def get_employee_data(agent_name, requested_fields):
 
 
    return filtered_records
-
-"""
