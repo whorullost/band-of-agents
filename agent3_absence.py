@@ -9,6 +9,7 @@ from users import USERS
 
 EXCESSIVE_ABSENCE_THRESHOLD = 40  # hours/month
 
+#records absence of employee
 def ag3_record_absence(user, employee_id, date, abs_type, hrs_missed, region, emp_type, department):
     if run_security_check(user, "record_absence"):
         record_absence(employee_id, date, abs_type, hrs_missed, region, emp_type, department)
@@ -16,24 +17,28 @@ def ag3_record_absence(user, employee_id, date, abs_type, hrs_missed, region, em
     else:
         return "Invalid action"
 
+#checks for the number of paid days the employee has
 def ag3_get_used_paid_days(user, employee_id, absence_type):
     if run_security_check(user, "view_absence"):
         return get_used_paid_days(employee_id, absence_type)
     else:
         return "Invalid action"
 
+#deletes absence of an employee
 def ag3_delete_absence(user, emp_id, date, abs_type):
     if run_security_check(user, "delete_absence"):
         return delete_absence(emp_id, date, abs_type)
     else:
         return "Invalid action"
 
+#updates absence for employee
 def ag3_update_absence(user, employee_id, field, new_value):
     if run_security_check(user, "update_absence"):
         return update_absence(employee_id, field, new_value)
     else:
         return "Invalid action"
-    
+
+#gets all absences of a user
 def ag3_get_all_absences(user):
     if run_security_check(user, "view_absence"):
         role = USERS[user]["role"]
@@ -70,14 +75,16 @@ def get_absence_field(user, employee_id, field):
     else:
         return "Invalid action"
 """
-    
+
+# employee's absence can be flagged for HR for review
 def flag_for_hr_review(employee_id, absence_type):
     return (f"{absence_type} for {employee_id} requires HR review")
-    
-def ag3_calculate_deduction(user, employee_id, month, year):
-    """Calculates total deduction across ALL absence types for an employee in a given month.
+
+"""
+Calculates total deduction across ALL absence types for an employee in a given month.
     Loops through each unique absence type present, applies rules separately, sums total.
-    """
+"""
+def ag3_calculate_deduction(user, employee_id, month, year):
     if run_security_check(user, "calc_deduction"):
         absences = get_absence_by_month(month, year)
         employee_absences = [a for a in absences if a["employee_id"] == employee_id]
@@ -124,6 +131,7 @@ def ag3_calculate_deduction(user, employee_id, month, year):
         return round(total_deduction, 2)
     return "Invalid action"
 
+# flags for HR if employee has excessive absences
 def ag3_flag_excessive_absences(user, employee_id, month, year):
     if run_security_check(user, "view_absence"):
         absences = get_absence_by_employee(employee_id)
@@ -139,6 +147,7 @@ def ag3_flag_excessive_absences(user, employee_id, month, year):
         return False
     return "Invalid action"
 
+#returns absence report
 def ag3_get_absence_report(user, employee_id, month, year):
     if run_security_check(user, "view_absence"):
         absences = get_absence_by_employee(employee_id)
