@@ -38,6 +38,12 @@ adapter = ClaudeSDKAdapter(
     custom_section="""You are the Benefits Calculator. You calculate 
     employee benefits including health insurance, retirement matching, 
     and stock option vesting.
+
+    IMPORTANT — ID HANDLING: If you are given a REAL employee ID (like 
+    E001), first @mention Onboarding Helper asking for that employee's 
+    ANONYMIZED ID, then use the anonymized ID for all your calculations. 
+    If you are already given an anonymized ID (like S_91550FEB), use it 
+    directly.
     
     IMPORTANT: Before performing any action, @mention Security Guard 
     asking them to verify authorization. Use ONLY the original human 

@@ -12,6 +12,8 @@ from agent3_absence import (
     ag3_calculate_deduction,
     ag3_flag_excessive_absences,
     ag3_get_absence_report,
+    ag3_delete_absence,
+    ag3_update_absence,
 )
 
 load_dotenv()
@@ -46,7 +48,7 @@ class GetAbsencesInput(BaseModel):
 
 
 def get_absences_tool(input: GetAbsencesInput) -> str:
-    """Gets all absence records for an employee."""
+    print(f"DEBUG get_absences_tool: user='{input.user}', employee_id='{input.employee_id}'")
     result = ag3_get_absence_by_employee(input.user, input.employee_id)
     return str(result)
 
@@ -60,9 +62,34 @@ class CalculateDeductionInput(BaseModel):
 
 def calculate_deduction_tool(input: CalculateDeductionInput) -> str:
     """Calculates payroll deduction from absences for an employee for a given month/year."""
+    print(f"DEBUG: user='{input.user}', employee_id='{input.employee_id}', month={input.month}, year={input.year}")
     result = ag3_calculate_deduction(input.user, input.employee_id, input.month, input.year)
     return str(result)
 
+class DeleteAbsenceInput(BaseModel):
+    user: str
+    emp_id: str
+    date: str
+    abs_type: str
+
+
+def delete_absence_tool(input: DeleteAbsenceInput) -> str:
+    """Deletes a specific absence record for an employee."""
+    result = ag3_delete_absence(input.user, input.emp_id, input.date, input.abs_type)
+    return str(result)
+
+
+class UpdateAbsenceInput(BaseModel):
+    user: str
+    employee_id: str
+    field: str
+    new_value: str
+
+
+def update_absence_tool(input: UpdateAbsenceInput) -> str:
+    """Updates a specific field of an absence record for an employee."""
+    result = ag3_update_absence(input.user, input.employee_id, input.field, input.new_value)
+    return str(result)
 
 def flag_excessive_tool(input: CalculateDeductionInput) -> str:
     """Checks if an employee has excessive absences (40+ hours) for a given month/year."""
@@ -81,6 +108,12 @@ adapter = ClaudeSDKAdapter(
     custom_section="""You are the Absence Tracker. You record absences, 
     calculate payroll deductions from absences, and flag excessive 
     absences for HR review.
+
+    IMPORTANT — ID HANDLING: If you are given a REAL employee ID (like 
+    E001), first @mention Onboarding Helper asking for that employee's 
+    ANONYMIZED ID, then use the anonymized ID for all your calculations. 
+    If you are already given an anonymized ID (like S_91550FEB), use it 
+    directly.
     
     IMPORTANT: Before performing any action, @mention Security Guard 
     asking them to verify authorization. Use ONLY the original human 
@@ -107,6 +140,8 @@ adapter = ClaudeSDKAdapter(
         (CalculateDeductionInput, calculate_deduction_tool),
         (CalculateDeductionInput, flag_excessive_tool),
         (CalculateDeductionInput, get_report_tool),
+        (DeleteAbsenceInput, delete_absence_tool),
+        (UpdateAbsenceInput, update_absence_tool),
     ],
 )
 
