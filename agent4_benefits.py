@@ -6,6 +6,7 @@ from hours_loader import get_average_weekly_hours
 from benefit_calculator import calculate_health_benefit, calculate_retirement_match, calculate_stock_options, calculate_years_of_service
 from users import USERS
 
+#security check: checks if user is verified to acces benefits
 def ag4_calculate_benefits(user, anon_id, month, year):
     if not run_security_check(user, "view_benefits"):
         return "Access denied"
@@ -24,13 +25,13 @@ def ag4_calculate_benefits(user, anon_id, month, year):
 
     years = calculate_years_of_service(start_date)
 
-    # FULL TIME
+    # FULL TIME benefit calculator
     if employment_type == "Full-Time":
         health_info = calculate_health_benefit(employment_type, health_insurance)
         retirement_info = calculate_retirement_match(salary, retirement_contribution, hours_per_week=40)
         stock_info = calculate_stock_options(stock_option, start_date, hours_per_week=40)
 
-    # PART TIME — based on actual hours worked that month
+    # PART TIME benefit calculator — based on actual hours worked that month
     else:
         avg_hours_per_week = get_average_weekly_hours(anon_id, month, year)
         health_info = calculate_health_benefit(employment_type, health_insurance)  # not eligible if not Full-Time
@@ -45,6 +46,7 @@ def ag4_calculate_benefits(user, anon_id, month, year):
         "years_of_service": years
     }
 
+# calculates monthly benefits and deducts from base calary
 def ag4_get_monthly_benefits_deduction(user, anon_id, month, year):
     """Returns just the dollar amount to deduct from paycheck for benefits.
     (Health insurance + employee's own retirement contribution — 
