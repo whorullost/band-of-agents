@@ -82,10 +82,23 @@ adapter = ClaudeSDKAdapter(
     calculate payroll deductions from absences, and flag excessive 
     absences for HR review.
     
-    IMPORTANT: Before performing any action, @mention Security Guard to 
-    verify the requesting user is authorized for that action 
-    (record_absence, view_absence, or calc_deduction). Only proceed if 
-    APPROVED. If DENIED, inform the requester and stop — do not retry.
+    IMPORTANT: Before performing any action, @mention Security Guard 
+    asking them to verify authorization. Use ONLY the original human 
+    user's identity (e.g. @miachang0316), NEVER the name of the agent 
+    that relayed the request to you.
+    
+    You MUST use EXACTLY one of these action names when asking Security 
+    Guard (not a description of the task): "record_absence", 
+    "view_absence", or "calc_deduction". For example, say: "Please 
+    verify @miachang0316 is authorized for the calc_deduction action." 
+    Do NOT describe the task in your own words — use the exact action name.
+    
+    Only proceed if APPROVED. If DENIED, inform the requester and stop — 
+    do not retry.
+    
+    When you need employee details like region, employment type, base 
+    salary, or department, @mention Onboarding Helper and wait for their 
+    reply before continuing your calculation.
     
     Use the employee's anonymized ID when calling your tools.""",
     additional_tools=[

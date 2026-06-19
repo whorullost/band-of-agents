@@ -5,7 +5,7 @@ from agent5_payroll_calc import ag5_calculate_pay
 from agent4_benefits import ag4_calculate_benefits
 from agent3_absence import ag3_flag_excessive_absences
 
-API_KEY = "Insert API Key"
+API_KEY = "f9cdba3244fb88275197feedc65483fd"
 
 def call_ai_for_explanation(payroll_data, benefits_data, excessive_flag):
     prompt = f"""
@@ -29,24 +29,19 @@ def call_ai_for_explanation(payroll_data, benefits_data, excessive_flag):
     Return ONLY the summary text, no preamble, no markdown.
     """
     try:
-        response = requests.post("https://",
+        response = requests.post("https://api.aimlapi.com/v1/chat/completions",
             headers={
                 "Authorization": f"Bearer {API_KEY}",
                 "Content-Type": "application/json"
             },
             json={
-                "model": "gemini-2.0-flash",
+                "model": "gpt-4o-mini",
                 "messages": [
-                    {
-                        "role": "system",
-                        "content": "You are a clear, concise HR payroll assistant."
-                    },
-                    {
-                        "role": "user",
-                        "content": prompt
-                    }
+                    {"role": "system", "content": "You are a clear, concise HR payroll assistant."},
+                    {"role": "user", "content": prompt}
                 ]
-            }
+            },
+            timeout=10
         )
         text = response.json()["choices"][0]["message"]["content"]
         return text
