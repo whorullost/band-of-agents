@@ -4,6 +4,7 @@ from anonymizer import anonymize_all, anonymize_one, anonymize_name, anonymize_i
 from lookup import build_lookup_table
 from users import USERS
 
+#checks the user's role and grabs anonymous data
 def ag1_get_all_employees(user):
     if run_security_check(user, "view_employee") == True:
         real_data = get_all_employees()
@@ -59,7 +60,7 @@ def ag1_get_employee_field(user, id, field):
             return get_field(id, field)
     else:
         return "Access denied"
-    
+
 def ag1_get_employee_field_by_anon(user, anon_id, field):
     if run_security_check(user, "view_employee") == True:
         if field == "name" or field == "employee_id":
@@ -70,7 +71,8 @@ def ag1_get_employee_field_by_anon(user, anon_id, field):
         return ag1_get_employee_field(user, real_id, field)
     else:
         return "Access denied"
-    
+
+#add new employee for payroll/data sheet
 def ag1_add_employee(user, name, dpt, job_title, emp_type, base_salary, region):
     if run_security_check(user, "add_employee") == True:
         details = {
@@ -85,6 +87,7 @@ def ag1_add_employee(user, name, dpt, job_title, emp_type, base_salary, region):
     else:
         return "Access denied"
 
+#input for new employee data
 def ag1_add_employee_prompt(user):
     if run_security_check(user, "add_employee") == True:
         name = input("New employee's name: ")
@@ -103,19 +106,23 @@ def ag1_add_employee_prompt(user):
         ag1_add_employee(user, name, dpt, job_title, emp_type, base_salary, region)
     else:
         return "Access denied"
-        
+
+#updating data field for a speciifc employee
 def ag1_update_employee(user, id, field, update):
     if run_security_check(user, "update_employee") == True:
         return(update_employee(id, field, update))
     else:
         return "Access denied"
-        
+
+#deleting an employee (after retirement, firing, etc.)
 def ag1_delete_employee(user, id):
     if run_security_check(user, "delete_employee") == True:
         return(delete_employee(id))
     else:
         return "Access denied"
 
-# test calls — remove these when done testing
+"""test calls — remove these when done testing
+
 if __name__ == "__main__":
     print(ag1_add_employee("anna smith", "Andy Chang", "Finance", "Junior Analyst", "Full-Time", 100000))
+"""

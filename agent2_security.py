@@ -37,6 +37,7 @@ AGENT_PERMISSIONS = {
    }
 }
 
+#checks and authorizes agent depending on it's permissions and depending on the user's permissions
 def authorize_request(agent_name, requested_fields):
    #Check whether an agent can access requested fields.
    if agent_name not in AGENT_PERMISSIONS:
@@ -60,7 +61,7 @@ def authorize_request(agent_name, requested_fields):
    log_agent_access(agent_name,"APPROVED","Valid request")
    return True
 
-
+#runs security check of user and agents, verifies, authorizes, and logs attempt
 def run_security_check(user, action, agent_name=None, requested_fields=None):
     if user not in USERS:
         log_attempt(user, action, allowed=False)
@@ -85,7 +86,7 @@ def run_security_check(user, action, agent_name=None, requested_fields=None):
     log_attempt(user, action, allowed=True)
     return True
 
-
+# logs access attempts of agents
 AGENT_ACCESS_LOG = []
 def log_agent_access(agent_name, status, reason):
    #Records all security decisions.
