@@ -7,6 +7,7 @@ from hours_loader import get_monthly_hours, get_hours_by_employee
 OVERTIME_THRESHOLD_PER_WEEK = 40
 OVERTIME_MULTIPLIER = 1.5
 
+#calculates overtime hours/pay
 def ag5_calculate_overtime(user, anon_id, month, year):
     if not run_security_check(user, "run_payroll"):
         return "Access denied"
@@ -29,6 +30,7 @@ def ag5_calculate_overtime(user, anon_id, month, year):
 
     return round(total_overtime_pay, 2)
 
+#calculates net pay: (salary + overtime pay) - (excessive absences + benfits)
 def ag5_calculate_pay(user, anon_id, month, year):
     if not run_security_check(user, "run_payroll"):
         return "Access denied"
@@ -63,6 +65,7 @@ def ag5_calculate_pay(user, anon_id, month, year):
         "net_pay": round(net_pay, 2)
     }
 
+#checks if user has permission to access all payroll (only HR), if so, returns list, if not, denied access
 def ag5_run_payroll_all(user, anon_id_list, month, year):
     if not run_security_check(user, "run_payroll"):
         return "Access denied"

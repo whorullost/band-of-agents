@@ -7,6 +7,8 @@ from agent3_absence import ag3_flag_excessive_absences
 
 API_KEY = "f9cdba3244fb88275197feedc65483fd"
 
+#connection to AI/API keys
+#the instructions for the AI to report summary about the data HR requests
 def call_ai_for_explanation(payroll_data, benefits_data, excessive_flag):
     prompt = f"""
     You are an HR payroll assistant. Explain this employee's payroll report 
@@ -49,6 +51,7 @@ def call_ai_for_explanation(payroll_data, benefits_data, excessive_flag):
         print(f"AI failed {e}, using basic template")
         return None
 
+#general outline of summary of payroll, benefits, excessive absences
 def generate_fallback_summary(payroll_data, benefits_data, excessive_flag):
     summary = (
         f"Net pay for this period is ${payroll_data['net_pay']}. "
@@ -62,6 +65,7 @@ def generate_fallback_summary(payroll_data, benefits_data, excessive_flag):
         summary += "This employee has excessive absences this month and may need HR review."
     return summary
 
+#generates report of a specific user
 def ag6_generate_report(user, anon_id, month, year):
     if not run_security_check(user, "run_payroll"):
         return "Access denied"
