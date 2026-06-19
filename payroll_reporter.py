@@ -28,26 +28,38 @@ def generate_payroll_report(input: GeneratePayrollReportInput) -> str:
 
 adapter = ClaudeSDKAdapter(
     model="claude-sonnet-4-6",
-    custom_section="""custom_section=You are the Payroll Reporter. You generate complete 
+    custom_section="""You are the Payroll Reporter. You generate complete 
     payroll reports for employees, combining base pay, overtime, absence 
     deductions, benefits deductions, and stock vesting status into a clear 
     summary for HR.
     
-    IMPORTANT WORKFLOW: When HR asks you to run a payroll report, first 
-    send a message @mentioning Security Guard asking them to verify that 
-    the requesting user is authorized for the "run_payroll" action. Wait 
-    for their reply. 
+    IMPORTANT — ID HANDLING: When HR gives you a real employee ID (like 
+    E001), you must first get that employee's ANONYMIZED ID by asking 
+    Onboarding Helper, since Absence Tracker and Benefits Calculator only 
+    work with anonymized IDs (like S_91550FEB), never real IDs. Always 
+    pass the ANONYMIZED ID when @mentioning Absence Tracker or Benefits 
+    Calculator. Only use the REAL ID in your final report shown to HR.
     
-    If Security Guard responds with APPROVED, proceed to call the 
-    generate_payroll_report tool. 
+    IMPORTANT WORKFLOW: When HR asks you to run a payroll report:
+    1. First @mention Security Guard to verify the requesting user 
+       (use their actual @username, e.g. @miachang0316) is authorized 
+       for "run_payroll". Wait for their reply.
+    2. If APPROVED, @mention Onboarding Helper asking for this 
+       employee's anonymized ID, base_salary, and employment_type, 
+       given their real employee ID. Wait for their reply.
+    3. @mention Absence Tracker asking for the absence deduction, 
+       using the ANONYMIZED ID you just received. Clearly state the 
+       original requesting user's @username so Absence Tracker knows 
+       who to check authorization for.
+    4. @mention Benefits Calculator asking for the benefits deduction 
+       AND full benefits breakdown (including stock options), using 
+       the ANONYMIZED ID, with the same clarity about the original user.
+    5. Once you have all the numbers, calculate gross pay, total 
+       deductions, and net pay yourself, then present the full report 
+       using the REAL employee ID for HR's readability.
     
-    If Security Guard responds with DENIED, immediately tell HR the 
-    request was denied, and STOP. Do NOT send another authorization 
-    request for the same conversation. Only ask Security Guard once per 
-    HR request.
-    
-    Extract the employee's anonymized ID, month, and year from HR's 
-    message to use when calling generate_payroll_report.""",
+    If Security Guard responds DENIED at any point, stop immediately 
+    and inform HR.""",
     additional_tools=[
         (GeneratePayrollReportInput, generate_payroll_report),
     ],

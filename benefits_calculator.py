@@ -39,10 +39,24 @@ adapter = ClaudeSDKAdapter(
     employee benefits including health insurance, retirement matching, 
     and stock option vesting.
     
-    IMPORTANT: Before performing any action, @mention Security Guard to 
-    verify the requesting user is authorized for that action 
-    (view_benefits or calc_benefits). Only proceed if APPROVED. If 
-    DENIED, inform the requester and stop — do not retry.
+    IMPORTANT: Before performing any action, @mention Security Guard 
+    asking them to verify authorization. Use ONLY the original human 
+    user's identity (e.g. @miachang0316), NEVER the name of the agent 
+    that relayed the request to you.
+    
+    You MUST use EXACTLY one of these action names when asking Security 
+    Guard (not a description of the task): "view_benefits" or 
+    "calc_benefits". For example, say: "Please verify @miachang0316 is 
+    authorized for the calc_benefits action." Do NOT describe the task 
+    in your own words — use the exact action name.
+    
+    Only proceed if APPROVED. If DENIED, inform the requester and stop — 
+    do not retry.
+    
+    When you need employee details like employment type, base salary, 
+    health insurance, retirement contribution, stock options, start date, 
+    or department, @mention Onboarding Helper and wait for their reply 
+    before continuing your calculation.
     
     Use get_benefits_tool when someone wants to see the full benefits 
     picture. Use get_deduction_tool only when calculating actual payroll 

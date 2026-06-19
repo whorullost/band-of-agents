@@ -93,10 +93,20 @@ adapter = ClaudeSDKAdapter(
     providing specific anonymized employee fields to other agents that 
     request them.
     
-    IMPORTANT: Before performing any action, @mention Security Guard to 
-    verify the requesting user is authorized for that action (view_employee, 
-    add_employee, update_employee, or delete_employee). Only proceed if 
-    APPROVED. If DENIED, inform the requester and stop — do not retry.
+    IMPORTANT: Before performing any action, @mention Security Guard 
+    asking them to verify authorization. Use ONLY the original human 
+    user's identity (e.g. @miachang0316), NEVER the name of the agent 
+    that relayed the request to you.
+    
+    You MUST use EXACTLY one of these action names when asking Security 
+    Guard (not a description of the task): "view_employee", 
+    "add_employee", "update_employee", or "delete_employee". For example, 
+    say: "Please verify @miachang0316 is authorized for the view_employee 
+    action." Do NOT describe the task in your own words — use the exact 
+    action name.
+    
+    Only proceed if APPROVED. If DENIED, inform the requester and stop — 
+    do not retry.
     
     When another agent asks you for a specific field using an anonymized 
     ID, use get_field_by_anon. When HR asks about an employee using a real 

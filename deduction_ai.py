@@ -65,7 +65,7 @@ DEFAULT_RULES = {
 def get_default_rules():
     return DEFAULT_RULES
 
-API_KEY = "Insert API Key"
+API_KEY = "f9cdba3244fb88275197feedc65483fd"
 
 def deduction_ai(absence_type, region, employment_type):
     prompt = f"""
@@ -87,31 +87,26 @@ def deduction_ai(absence_type, region, employment_type):
     If unsure, use federal US law as default.
     """
     try:
-        response = requests.post("https://",
+        response = requests.post("https://api.aimlapi.com/v1/chat/completions",
             headers={
                 "Authorization": f"Bearer {API_KEY}",
                 "Content-Type": "application/json"
             },
             json={
-                "model": "gemini-2.0-flash",
+                "model": "gpt-4o-mini",
                 "messages": [
-                    {
-                        "role": "system",
-                        "content": "You are a labor law expert specializing in payroll deductions"
-                    },
-                    {
-                        "role":"user",
-                        "content": prompt
-                    }
+                    {"role": "system", "content": "You are a labor law expert specializing in payroll deductions"},
+                    {"role": "user", "content": prompt}
                 ]
-            }
+            },
+            timeout=10
         )
         text = response.json()["choices"][0]["message"]["content"]
         rules = json.loads(text)
         return rules
     except Exception as e:
         print(f"AI failed {e}, use default rules")
-        return None    
+        return None 
     
 def validate_rules(rules):
     if rules is None:
