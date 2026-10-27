@@ -5,8 +5,6 @@ A multi-agent AI system with 6 specialized agents, including Onboarding, Securit
 
 Built for **Lablab.ai's Band of Agents Hackathon** by Team [INSERT NAME HERE] ([whorullost](https://github.com/whorullost) & [tropilemon](https://github.com/tropilemon)).
 
-[Screenshot or GIF of a sample run]
-
 ## Problem
 - Payroll is repetitive, tedious, and manual
 - Existing tools calculate but don't explain
